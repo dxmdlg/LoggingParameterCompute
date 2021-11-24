@@ -28,9 +28,9 @@ namespace 测井数据处理
         public MainWindow()
         {
             InitializeComponent();
-            
+
             this.DataContext = attr;
-            this.datagrid.ItemsSource= oc;
+            this.datagrid.ItemsSource = oc;
 
         }
 
@@ -53,7 +53,7 @@ namespace 测井数据处理
                 oc.Add(lp);
             }
         }
-           
+
 
         /// <summary>
         /// 从文件提交数据按钮
@@ -65,7 +65,7 @@ namespace 测井数据处理
 
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Title = "打开数据";
-            dialog.Filter = "表格文件(*.xlsx *.txt *.xls)|*.xlsx;*.txt;*.xls|All files(*.*)|*.*"; 
+            dialog.Filter = "表格文件(*.xlsx *.txt *.xls)|*.xlsx;*.txt;*.xls|All files(*.*)|*.*";
             dialog.Multiselect = false;
             dialog.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string filename = "";
@@ -84,11 +84,12 @@ namespace 测井数据处理
                         System.Windows.MessageBox.Show("无法打开此类文件！", "提示");
                     }
                 }
-            }catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show("打开失败！","提示");
             }
-            
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("打开失败！", "提示");
+            }
+
         }
 
 
@@ -104,16 +105,18 @@ namespace 测井数据处理
             sfd.FileName = "测井数据";//设置默认文件名
             sfd.DefaultExt = "xlsx";//设置默认格式（可以不设）
             sfd.AddExtension = true;//设置自动在文件名中添加扩展名
-            //try { 
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
 
-                Utils.saveExecl(sfd.FileName, oc);
+                    Utils.saveExecl(sfd.FileName, oc);
+                }
             }
-            //}catch(Exception ex)
-            //{
-            //    System.Windows.MessageBox.Show("导出数据失败！", "提示");
-            //}
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("导出数据失败！", "提示");
+            }
         }
 
         /// <summary>
