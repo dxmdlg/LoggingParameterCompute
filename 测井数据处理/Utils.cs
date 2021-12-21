@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace 测井数据处理
     /// </summary>
     internal static class Utils
     {
+
         /// <summary>
         /// 处理接收的参数，把合法参数转成对象返回
         /// </summary>
@@ -48,9 +50,30 @@ namespace 测井数据处理
         public static double compute_BI(LoggingParameter lp)
         {
             double[] lp_pac = new double[3];
-            lp_pac = pca(lp);//使用pac降维
+            LoggingParameter lp_z_score = z_score(lp);//使用Z-Score均值化处理数据
+            lp_pac = pca(lp_z_score);//使用pac降维
             double BI = input_model(lp_pac);//返回模型计算的BI值
             return BI;
+        }
+
+
+        /// <summary>
+        /// 进行z-score均值化
+        /// </summary>
+        /// <param name="lp"></param>
+        /// <returns>均值化后的z-score</returns>
+        private static LoggingParameter z_score(LoggingParameter lp)
+        {
+            double[] z_score = new double[5];
+            z_score = new double[5] { lp.GR, lp.SP, lp.DT, lp.DEN, lp.CNL };
+            Zscore zs = new Zscore();
+            for (int i = 0; i < 5; i++)
+            {
+                z_score[i] -= zs.Mean[i];
+                z_score[i]/=zs.Std[i];
+            }
+            return new LoggingParameter(z_score[0], z_score[1], z_score[2], z_score[3], z_score[4]);
+
         }
 
         /// <summary>
@@ -80,7 +103,9 @@ namespace 测井数据处理
         /// <returns></returns>
         private static double input_model(double[] lp_pca)
         {
-            return (lp_pca[0] + lp_pca[1] + lp_pca[2]) / 3.0;
+            double res = Model.predict(lp_pca);
+            double res2 = double.Parse(res.ToString("0.00"));
+            return res2;
         }
 
         /// <summary>
@@ -93,6 +118,10 @@ namespace 测井数据处理
             List<LoggingParameter> list = new List<LoggingParameter>();
             string[] p = new string[5];
             LoggingParameter lp = null;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding encoding1 = Encoding.GetEncoding(1252);
+            Console.WriteLine(encoding1.WebName);
+            Encoding encoding2 = Encoding.GetEncoding("GB2312");
             Workbook book = new Workbook(strFileName);
             Worksheet sheet = book.Worksheets[0];
             Cells cells = sheet.Cells;
@@ -110,6 +139,7 @@ namespace 测井数据处理
                     oc.Add(lp);
                 }
             }
+            
             System.Windows.MessageBox.Show("计算完毕!共" + oc.Count + "条数据", "提示");
         }
 

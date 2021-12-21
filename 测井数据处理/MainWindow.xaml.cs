@@ -87,11 +87,10 @@ namespace 测井数据处理
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("打开失败！", "提示");
+               System.Windows.MessageBox.Show("打开失败！", "提示");
             }
 
         }
-
 
         /// <summary>
         /// 导出数据按钮
