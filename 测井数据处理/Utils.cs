@@ -177,7 +177,7 @@ namespace 测井数据处理
         /// <param name="oc"></param>
         public static void saveExecl(string filename, ObservableCollection<LoggingParameter> oc)
         {
-            string license = @"C:\Users\19870\Desktop\vs2022work\测井数据处理\测井数据处理\resource\License.lic";
+            string license = @"resource\License.lic";
             //string license = AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\Aspose.Total.lic";
             Aspose.Cells.License license4 = new Aspose.Cells.License();
             license4.SetLicense(license);
